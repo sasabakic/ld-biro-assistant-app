@@ -1,0 +1,9 @@
+# Keep the build context small (node_modules is huge and provided via a volume).
+node_modules
+.git
+.expo
+dist
+ios
+android
+*.log
+.pnpm-store

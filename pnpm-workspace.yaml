@@ -1,0 +1,29 @@
+# Expo / React Native requires a flat node_modules — Metro does not resolve pnpm's
+# default symlinked layout. This is the one non-negotiable setting for Expo + pnpm.
+nodeLinker: hoisted
+
+# Supply-chain hardening — https://pnpm.io/supply-chain-security
+# (pnpm v11 reads these here, not from .npmrc)
+
+# Cooldown: refuse to install any package version published less than 3 days ago.
+# Malicious versions (e.g. Shai-Hulud) are almost always detected and yanked within
+# hours, so this filters out smash-and-grab compromises. Raise/lower as you like.
+minimumReleaseAge: 4320
+
+# Fail the install if a dependency wants to run an install/build script that is NOT
+# explicitly allow-listed in allowBuilds below — instead of silently skipping it.
+# New/unexpected build scripts (the Shai-Hulud execution vector) become a hard stop.
+strictDepBuilds: true
+
+# Block transitive dependencies that resolve from git repos or tarball URLs.
+blockExoticSubdeps: true
+
+# Warn if node_modules doesn't match the lockfile before running a package script.
+verifyDepsBeforeRun: warn
+
+# Build-script allow-list. unrs-resolver = native resolver (needed). dtrace-provider
+# is optional native tracing that degrades to a no-op when unbuilt — left off to
+# reduce attack surface; flip to true only if you actually need dtrace probes.
+allowBuilds:
+  unrs-resolver: true
+  dtrace-provider: false

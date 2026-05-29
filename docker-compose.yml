@@ -1,0 +1,46 @@
+name: ld-biro-assistant-app
+
+# INSTALL-ONLY isolated sandbox. Use this to install/vet dependencies safely so
+# their install scripts never touch your Mac. You CANNOT run the native app here
+# (no iOS simulator / Android emulator in Linux) — keep using `expo start` and EAS
+# builds on your Mac.
+#
+#   docker compose build                      # build the image (once)
+#   docker compose run --rm app pnpm install   # SAFE install — scripts run in the container
+#   docker compose run --rm app bash           # shell into the sandbox
+#   docker compose down -v                     # tear down + delete the node_modules volume
+#
+# The repo is bind-mounted, so the pnpm-lock.yaml you generate lands back on the
+# host. node_modules lives in a named volume (this project uses nodeLinker: hoisted
+# in pnpm-workspace.yaml, so it'll be a flat layout there), keeping the container's
+# Linux binaries off your host.
+
+services:
+  app:
+    build: .
+    working_dir: /app
+    command: bash
+    security_opt:
+      - "no-new-privileges:true"   # install scripts can't escalate privileges
+    cap_drop:
+      - ALL                        # strip every Linux capability
+    tmpfs:
+      - /tmp
+    init: true
+    environment:
+      - CI=false
+    volumes:
+      - .:/app
+      # Read-only overlays: nothing in the container can tamper with your git history
+      # or editor config — a hostile install/build script writing here hits EROFS.
+      - ./.git:/app/.git:ro
+      - ./.vscode:/app/.vscode:ro
+      - node_modules:/app/node_modules
+      # pnpm relocates its content store next to the project (it won't hardlink
+      # across the macOS bind mount), so capture /app/.pnpm-store in a volume —
+      # otherwise it leaks hundreds of MB back into the repo on your host.
+      - pnpm_store:/app/.pnpm-store
+
+volumes:
+  node_modules:
+  pnpm_store:

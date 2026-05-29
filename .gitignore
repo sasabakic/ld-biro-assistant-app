@@ -42,3 +42,6 @@ app-example
 # generated native folders
 /ios
 /android
+
+# pnpm container store (should live in a Docker volume, never on host)
+.pnpm-store/
