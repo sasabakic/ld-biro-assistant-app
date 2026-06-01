@@ -1,14 +1,14 @@
 {
   "cli": {
     "version": ">= 16.0.0",
-    "appVersionSource": "remote",
-    "node": "20.18.0"
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
       "developmentClient": true,
       "distribution": "internal",
       "environment": "development",
+      "node": "20.18.0",
       "android": {
         "buildType": "apk"
       },
@@ -19,6 +19,7 @@
     "preview": {
       "distribution": "internal",
       "environment": "preview",
+      "node": "20.18.0",
       "android": {
         "buildType": "apk"
       }
@@ -27,6 +28,7 @@
       "autoIncrement": true,
       "environment": "production",
       "distribution": "internal",
+      "node": "20.18.0",
       "android": {
         "buildType": "apk"
       }
